@@ -11,12 +11,11 @@ app.controller('mainCtrl', function($scope, Factory) {
   $scope.loading = false;
 
   $scope.getIssues = function(state) {
-    // console.log($scope.repo,$scope.accessToken,$scope.days,$scope.daysEnd,$scope.state);
     if(checkValid()){
       $scope.loading = true;
       Factory.get($scope.repo,$scope.accessToken,$scope.days,$scope.daysEnd,state)
       .success(function(data) {
-        checkState(data.state)
+        checkState(data.state);
         $scope.indexData = data.indexData;
       })
       .error(function(reason) {
@@ -51,7 +50,7 @@ app.controller('mainCtrl', function($scope, Factory) {
       $scope.state = 'submit';
       $scope.loading = false;
     }
-  };
+  }
 
   function checkValid() {
     if ($scope.accessToken === '') {
@@ -68,13 +67,19 @@ app.controller('mainCtrl', function($scope, Factory) {
     else{
       return true;
     }
-  };
+  }
 });
 
 
 
 app.factory('Factory', function($http){
-  BASE_URL = "http://localhost:3001";
+  if (process.env.API_URL)
+    BASE_URL = process.env.API_URL;
+  else if (process.env.API_PORT)
+    BASE_URL = "http://localhost:" + process.env.API_PORT;
+  else
+    BASE_URL = "http://localhost:3001";
+  
   return {
     get: function(repo,token,days,daysEnd,state) {
       return $http.get(BASE_URL + 

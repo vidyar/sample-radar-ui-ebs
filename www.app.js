@@ -22,7 +22,7 @@ app.get('/', function(req, res) {
 });
 
 
-var PORT = process.env.FE_PORT || '3000';
+var PORT = process.env.WWW_PORT || '3000';
 
 // listen
 app.listen(PORT, function() {
