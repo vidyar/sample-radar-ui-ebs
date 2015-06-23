@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html ng-app="radar">
+  <head>
+    <title>Issue Timeline</title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+    <link href="http://getbootstrap.com/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="http://getbootstrap.com/examples/dashboard/dashboard.css" rel="stylesheet">
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+    <script src="javascripts/home.js"></script>
+  </head>
+
+  <body ng-controller="mainCtrl">
+    <div class="box">
+      <div class="panel panel-body" style="background:#f0f0f0;">
+        <br>
+         <center> <h1>Github Issue Radar</h1></center>
+        <br>
+        <div>
+          <div>
+            <div ng-if="message.length>0">
+              <div class="alert alert-danger" style="text-align:center">{{message}}</div>
+            </div>
+            <div ng-if="message.length===0">
+              <div class="alert alert-success" style="text-align:center">Get an access token (Github -> Settings -> Personal Access Tokens) and put it below.<br> Choose a repository to view, the number of days back, and either open or closed issues.</div>
+              </div>
+          </div>
+          <form class="form-inline" autocomplete="off">
+            <div class="span7 text-center">
+              <label for="username">Github Repo Path:</label>
+                <input type="text" class="form-control" name="repo" ng-model="repo">
+            </div><br>
+            <div class="span7 text-center">
+              <label for="days"><b>Range of Days Ago:</b></label>
+              <input type="text" class="form-control" name="days" ng-model="days">
+              <label for="daysEnd"> to </label>
+              <input type="text" class="form-control" name="daysEnd" ng-model="daysEnd">
+            </div><br>
+            <div class="span7 text-center">
+              <label for="token">Access Token: </label>
+              <input type="text" class="form-control" name="token" ng-model="accessToken">
+            </div><br><br>
+            <div class="span7 text-center">
+              <button class="btn btn-primary btn-lg" ng-click="getIssues('Open')" style="padding:10px 80px 10px 80px">Open</button>
+              <button class="btn btn-primary btn-lg" ng-click="getIssues('Close')" style="padding:10px 80px 10px 80px">Closed</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
