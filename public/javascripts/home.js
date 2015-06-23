@@ -1,6 +1,6 @@
 var app = angular.module('radar', []);
 
-app.controller('mainCtrl', function($scope, Factory) {
+app.controller('mainCtrl', function($scope, Url_Factory, Factory) {
   $scope.message = {'type':'info'};
   $scope.repo = 'shippable/support';
   $scope.accessToken = '';
@@ -9,11 +9,23 @@ app.controller('mainCtrl', function($scope, Factory) {
   $scope.indexData = {};
   $scope.state = 'submit';
   $scope.loading = false;
+  Url_Factory.get()
+  .success(function(data) {
+    if (data.API_URL)
+      $scope.BASE_URL = data.API_URL;
+    else if (data.API_PORT)
+      $scope.BASE_URL = "http://localhost:" + data.API_PORT;
+    else
+      $scope.BASE_URL = "http://localhost:3001";
+  })
+  .error(function(reason) {
+    console.log(reason);
+  });
 
   $scope.getIssues = function(state) {
     if(checkValid()){
       $scope.loading = true;
-      Factory.get($scope.repo,$scope.accessToken,$scope.days,$scope.daysEnd,state)
+      Factory.get($scope.BASE_URL,$scope.repo,$scope.accessToken,$scope.days,$scope.daysEnd,state)
       .success(function(data) {
         checkState(data.state);
         $scope.indexData = data.indexData;
@@ -21,6 +33,7 @@ app.controller('mainCtrl', function($scope, Factory) {
       .error(function(reason) {
         $scope.loading = false;
         console.log(reason);
+        $scope.message = {'type':'error','text':'Error! Check that you can access the API...'};
       });
     }
   };
@@ -73,21 +86,22 @@ app.controller('mainCtrl', function($scope, Factory) {
 
 
 app.factory('Factory', function($http){
-  if (process.env.API_URL)
-    BASE_URL = process.env.API_URL;
-  else if (process.env.API_PORT)
-    BASE_URL = "http://localhost:" + process.env.API_PORT;
-  else
-    BASE_URL = "http://localhost:3001";
-  
   return {
-    get: function(repo,token,days,daysEnd,state) {
-      return $http.get(BASE_URL + 
+    get: function(url,repo,token,days,daysEnd,state) {
+      return $http.get(url + 
         '/issues?&repo=' + repo +
         '&token=' + token +
         '&days=' + days +
         '&daysEnd=' + daysEnd +
         '&state=' + state);
+    }
+  };
+});
+
+app.factory('Url_Factory', function($http){
+  return {
+    get: function() {
+      return $http.get('/env');
     }
   };
 });

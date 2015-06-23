@@ -19,6 +19,10 @@ app.get('/', function(req, res) {
   res.sendFile(path.resolve('./public/views/home.html')); 
 });
 
+app.get('/env', function(req, res) {
+  res.status(200).json({'API_URL':process.env.API_URL,'API_PORT':process.env.API_PORT});
+});
+
 
 var PORT = process.env.WWW_PORT || '3000';
 
